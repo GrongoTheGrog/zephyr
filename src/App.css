@@ -1,0 +1,39 @@
+body {
+	background-color: rgb(226, 226, 226);
+	padding: 50px;
+} 	
+
+main{
+	width: 60vw;
+	max-width: 800px;
+	display: flex;
+	justify-self: center;
+
+	gap: 15px;
+	box-sizing: border-box;
+	flex-wrap: wrap;
+}
+
+.container {
+	background-color: white;
+	height: 25vh;
+	flex-shrink: 0;
+	box-sizing: border-box;
+	border-radius: 10px;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+	padding: 10px 30px;
+	display: flex;
+	justify-content: center;
+}
+
+.graph-1{
+	width: 100%;
+}
+
+.graph-2{
+	flex: 5.5;
+}
+
+.graph-3{
+	flex: 4.5;
+}
