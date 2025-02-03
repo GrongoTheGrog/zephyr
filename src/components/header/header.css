@@ -26,6 +26,8 @@ header{
     justify-content: space-between;
     padding: 10px;
     box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-style: italic;
 }
 
 .toggleTheme{

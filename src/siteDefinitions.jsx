@@ -6,12 +6,17 @@ export const useDefinitions = () => useContext(SiteDefinitions);
 
 export const DefinitionsProvider = ({ children }) => {
 
-    const [theme, setTheme] = useState(true);
+
+    const storageTheme = JSON.parse(localStorage.getItem('theme'));
+    const [theme, setTheme] = useState(storageTheme !== undefined ? storageTheme : true);
+
+    if (!theme) document.querySelector('body').classList.add('light-mode');
+    if (theme) document.querySelector('body').classList.remove('light-mode');
 
     const toggleTheme = () => {
         setTheme(prev => {
-            if (prev) document.querySelector('body').classList.add('light-mode');
-            if (!prev) document.querySelector('body').classList.remove('light-mode');
+            localStorage.setItem('theme', JSON.stringify(!prev))
+
             return !prev;
         });
     }
