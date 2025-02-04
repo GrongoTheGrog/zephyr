@@ -1,0 +1,64 @@
+.weather-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.title-weather{
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: start;
+    row-gap: 10px;
+}
+
+.weather-info-container{
+    width: 100%;
+    display: flex;
+    margin-top: 70px;
+    padding: 20px 18vw;
+    flex-direction: column;
+}
+
+
+.info-weather{
+    margin-top: 40px;
+}
+
+.temperature{
+    display: flex;
+    column-gap: 30px;
+}
+
+.choose{
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
+.choose-span{
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.active-unit{
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.temperature-display{
+    display: flex;
+    flex-direction: column;
+    row-gap: 14px;
+}
+
+.main-temperature{ 
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.max-temperature{
+    font-size: 18px;
+}

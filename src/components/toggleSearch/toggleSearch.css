@@ -1,0 +1,35 @@
+.buttons-toggle-contaniner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.toggle-button{
+    height: 25px;
+    cursor: pointer;
+    border: none;
+    color: var(--font-color);
+    padding: 3px 30px;
+    box-sizing: content-box;
+    transition: background-color 0.2s linear;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.search{
+    background-color: var(--lighter-2);
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.local{
+    background-color: var(--lighter-2);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.active-toggle{
+    background-color: var(--lighter-1);
+}
