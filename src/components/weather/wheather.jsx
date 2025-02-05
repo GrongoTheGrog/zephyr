@@ -1,17 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { Chart as ChartJS } from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, LineElement, PointElement } from 'chart.js';
 import { Line } from "react-chartjs-2";
 
-import 'weather-icons/css/weather-icons.css'
-
 import './wheather.css';
+
+import {format} from 'date-fns';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    PointElement
+);
 
 export function Weather(){
 
     const {city} = useParams();
-    //const [data, setData] = useState();
+    const [data, setData] = useState();
+    const [localTime, setLocalTime] = useState(null);
+    const [iconCoded, setIconCoded] = useState(null);
+    const [chart, setChart] = useState('Temperature')
+
+    const optionRef = useRef();
 
     const [celcius, setCelcius] = useState(true);
 
@@ -19,7 +34,7 @@ export function Weather(){
         return (value * (9/5)) + 32;
     }
 
-    /*useEffect(() => {
+    useEffect(() => {
         let lat;
         let lon;
 
@@ -33,16 +48,19 @@ export function Weather(){
 
                 let data = await responseCoords.json();
 
-                console.log(data[0].lat)
-
                 lat = data[0].lat;
                 lon = data[0].lon;
-                const responseData = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&units=metric&lon=${lon}&appid=${process.env.REACT_APP_API_KEY}`);
+                const responseData = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&cnt=3&units=metric&lon=${lon}&appid=${process.env.REACT_APP_API_KEY}`);
 
                 data = await responseData.json();
                 console.log(data)
-
                 setData(() => data)
+
+                const timezoneOffset = data.city.timezone; // Timezone in seconds
+                setLocalTime(new Date(Date.now() + timezoneOffset * 1000));
+            
+                setIconCoded(data.list[0].weather[0].icon);
+
 
             }catch(err){
                 console.log(err)
@@ -50,61 +68,43 @@ export function Weather(){
         }
 
         getData();
-    }, [])
-    }*/
+    }, []) 
 
+    const options = [
+        {label: 'Temperature'},
+        {label: 'Wind'},
+        {label: 'Rain'}
+    ]
 
-    const data = {
-        "coord": {
-           "lon": 7.367,
-           "lat": 45.133
-        },
-        "weather": [
-           {
-              "id": 501,
-              "main": "Rain",
-              "description": "moderate rain",
-              "icon": "10d"
-           }
-        ],
-        "base": "stations",
-        "main": {
-           "temp": 284.2  - 273,
-           "feels_like": 282.93 - 273,
-           "temp_min": 283.06  - 273,
-           "temp_max": 286.82  - 273,
-           "pressure": 1021,
-           "humidity": 60,
-           "sea_level": 1021,
-           "grnd_level": 910
-        },
-        "visibility": 10000,
-        "wind": {
-           "speed": 4.09,
-           "deg": 121,
-           "gust": 3.47
-        },
-        "rain": {
-           "1h": 2.73
-        },
-        "clouds": {
-           "all": 83
-        },
-        "dt": 1726660758,
-        "sys": {
-           "type": 1,
-           "id": 6736,
-           "country": "IT",
-           "sunrise": 1726636384,
-           "sunset": 1726680975
-        },
-        "timezone": 7200,
-        "id": 3165523,
-        "name": "Province of Turin",
-        "cod": 200
-     }     
-     
-     
+    const iconMap = {
+        '01d': `wi-day-sunny`,
+        '02d': `wi-day-cloudy`,
+        '03d': 'wi-cloud',
+        '04d': 'wi-cloudy',
+        '09d': `wi-day-rain`,
+        '10d': `wi-day-rain`,
+        '11d': 'wi-storm-showers',
+        '01n': `wi-night-clear`,
+        '02n': `wi-night-alt-cloudy`,
+        '03n': 'wi-cloud',
+        '04n': 'wi-cloudy',
+        '09n': `wi-night-alt-hail`,
+        '10n': `wi-night-alt-hail`,
+        '11n': 'wi-storm-showers'
+    }
+
+    function toggleOption(){
+        if (optionRef.current.classList.contains('active')) {
+            optionRef.current.classList.remove('active');
+        }else{
+            optionRef.current.classList.add('active');
+        }
+    }
+
+    function clickOption(event){
+        optionRef.current.classList.remove('active');
+        setChart(event.target.dataset.label);
+    }
 
     return (
         <section className="weather-container">
@@ -112,7 +112,7 @@ export function Weather(){
             <section className="weather-info-container">
                 <div className="title-weather">
                     <span>{city}</span>
-                    <span>20:20</span>
+                    <span>{format(localTime, 'HH:mm')}</span>
 
                 </div>
 
@@ -135,25 +135,94 @@ export function Weather(){
 
                         <div className="temperature-display">
                             <span className="main-temperature">
-                                {celcius ? `${data.main.temp.toFixed(1)}ºC` : `${toF(data.main.temp).toFixed(1)}ºF`}
+                                {celcius ? `${data.list[0].main.temp.toFixed(1)}ºC` : `${toF(data.list[0].main.temp).toFixed(1)}ºF`}
                             </span>
 
                             <span className="max-temperature">
-                                Feels like: {celcius ? `${data.main.feels_like.toFixed(1)}ºC` : `${toF(data.main.feels_like).toFixed(1)}ºF`}
+                                Feels like: {celcius ? `${data.list[0].main.feels_like.toFixed(1)}ºC` : `${toF(data.list[0].main.feels_like).toFixed(1)}ºF`}
                             </span>
 
                             <span className="max-temperature">
-                                Max: {celcius ? `${data.main.temp_max.toFixed(1)}ºC` : `${toF(data.main.temp_max).toFixed(1)}ºF`}
+                                Max: {celcius ? `${data.list[0].main.temp_max.toFixed(1)}ºC` : `${toF(data.list[0].main.temp_max).toFixed(1)}ºF`}
                             </span>
 
                             <span className="max-temperature">
-                                Min: {celcius ? `${data.main.temp_min.toFixed(1)}ºC` : `${toF(data.main.temp_min).toFixed(1)}ºF`}
+                                Min: {celcius ? `${data.list[0].main.temp_min.toFixed(1)}ºC` : `${toF(data.list[0].main.temp_min).toFixed(1)}ºF`}
                             </span>
                         </div>
                     </div>
 
-                    <div className="weather-icon">
-                        <img></img>
+                    <div className="weather-icon-container">
+                        <i className={`wi ${iconMap[iconCoded]} weather-icon`}></i>
+                        <span className="weather-status">
+                            {data.list[0].weather[0].main}
+                        </span>
+                    </div>
+
+                    <div className="weather-extra-container">
+                        <div className="extra-container" >
+                            <span className="extra-title">
+                                Humidity:
+                            </span>
+                            <span className="extra-info">
+                                {data.list[0].main.humidity}%
+                            </span>
+                        </div>
+
+                        <div className="extra-container">
+                            <span className="extra-title">
+                                Wind:
+                            </span>
+                            <div className="wind-container">
+                                <span className="extra-info">
+                                    {celcius ? (data.list[0].wind.speed * 4.2).toFixed(1) : (data.list[0].wind.speed * 2.23694).toFixed(1)} {celcius ? 'km/h' : 'mph'}
+                                </span>
+                                <i className={`wi wi-wind towards-${data.list[0].wind.deg}-deg wind-icon`}></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div className="chart-container">
+                        <div className="option-container">
+                            <div className="current-option option" onClick={toggleOption}>
+                                {chart}
+                                <span style={{fontSize: '14px'}}>&#9660;</span>
+                            </div>
+
+                            <div className="option-dropdown" ref={optionRef}>
+                                {options.map((option, index) => {
+                                    return (
+                                        <div className="pick-option option" key={index} data-label={option.label} onClick={clickOption}>
+                                            {option.label}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+
+                        <Line data={{
+                            label: ['1pm', '4pm', '7pm', '10pm'],
+                            datasets: [
+                                {
+                                    label: chart,
+                                    data: [10, 30, 90, 10],
+                                    backgroundColor: 'var(--font-color)',
+                                    borderColor: 'var(--font-color)'
+                                }
+                            ]
+                        }} options={{
+                            responsive: false,
+                            plugins: {
+                                legend: {
+                                    position: "bottom",
+                                },
+                                title: {
+                                    display: false
+                                }
+                            }
+                        }}></Line>
                     </div>
                 </div>
             </section>

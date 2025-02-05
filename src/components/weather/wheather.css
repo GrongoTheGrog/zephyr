@@ -25,11 +25,14 @@
 
 .info-weather{
     margin-top: 40px;
+    display: flex;
+    gap: 10px;
 }
 
 .temperature{
     display: flex;
     column-gap: 30px;
+    width: 230px;
 }
 
 .choose{
@@ -61,4 +64,99 @@
 
 .max-temperature{
     font-size: 18px;
+}
+
+.weather-icon{
+    font-size: 58px;
+}
+
+.weather-icon-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 25px;
+    margin-right: 35px;
+}
+
+.weather-status{
+    font-size: 23px;
+    font-weight: bold;
+}
+
+
+.weather-extra-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 23px;
+}
+
+.extra-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
+.extra-title{
+    font-size: 28px;
+}
+
+.extra-info{
+    width: 105px;;
+    font-size: 20px;
+}
+
+.wind-container{
+    width: 200px;
+    display: flex;
+    align-items: center;
+}
+
+.wind-icon{
+    font-size: 30px;
+}
+
+.option{
+    width: 200px;
+    height: 30px;
+    padding: 3px 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.current-option{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    transition: background-color 0.3s ease;
+}
+
+.option:hover{
+    background-color: var(--lighter-2);
+}
+
+.option-container{
+    width: 200px;
+    height: 30px;
+    font-size: 18px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.option-dropdown{
+    position: absolute;
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.option-dropdown.active{
+    opacity: 1;
+    display: block;
+}
+
+
+.pick-option{
+    font-size: 17px;
 }
