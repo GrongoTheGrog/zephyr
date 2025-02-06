@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import { Weather } from './components/weather/wheather';
 
 import { ToggleSearch } from './components/toggleSearch/toggleSearch';
-
+import { Search } from './components/search/search';
 
 function App() {
 
@@ -13,16 +13,32 @@ function App() {
 
   const [city, setCity] = useState();
 
+  useEffect(() => {
+    if (window.location.pathname !== '/'){
+      localStorage.setItem('lastPage', window.location.pathname);
+    }
+  }, [])
+
 
   useEffect(() => {
+    const city = localStorage.getItem('city');
+    if (city) {
+      const lastPage = localStorage.getItem('lastPage') || `/places/${city}`;
+      navigate(lastPage);
+      return
+    }
+
     if ('geolocation' in navigator){
       navigator.geolocation.getCurrentPosition((postion) => {
 
         fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${postion.coords.latitude}&lon=${postion.coords.longitude}&appid=${process.env.REACT_APP_API_KEY}`)
         .then(response => response.json())
         .then(data => {
+          localStorage.setItem('city', data[0].name)
+
           setCity(() => data[0].name);
-          navigate(`/places/${data[0].name}`);
+          const lastPage = localStorage.getItem('lastPage') || `/places/${data[0].name}`;
+          navigate(lastPage);
         })
 
         
@@ -33,7 +49,7 @@ function App() {
       }
     )
     }
-  }, [navigate])
+  }, [])
   
 
   console.log(city)
@@ -47,7 +63,7 @@ function App() {
 
       <Routes>
         <Route path='/places/:city'  element={<Weather />}/>
-        <Route path='/search'/>
+        <Route path='/search'    element={<Search />}/>
       </Routes>
 
     </main>

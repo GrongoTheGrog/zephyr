@@ -8,7 +8,7 @@ export function ToggleSearch({city}){
 
     const buttons = [
         {label: 'Your Location', class: 'local', link: `/places/${city}`},
-        {label: 'Search Location', class: 'search'}
+        {label: 'Search Location', class: 'search', link: `/search`}
     ]
 
     return (
