@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDefinitions } from "../../siteDefinitions";
 
@@ -8,7 +8,6 @@ import { Line } from "react-chartjs-2";
 import './wheather.css';
 
 import {format} from 'date-fns';
-import { ca } from "date-fns/locale";
 
 ChartJS.register(
     CategoryScale,
@@ -44,7 +43,7 @@ export function Weather(){
 
         const getData = async () => {
             try{
-                const responseCoords = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=3&appid=${process.env.REACT_APP_API_KEY}`);
+                const responseCoords = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=10&appid=${process.env.REACT_APP_API_KEY}`);
 
                 if (!responseCoords.ok) {
                     throw new Error('Failed to fetch city coordinates');
@@ -63,15 +62,14 @@ export function Weather(){
 
                 const current = await responseCurrentData.json();
 
-                console.log(current)
 
                 setCurrentData(current);
 
                 const timezoneOffset = current.timezone; // Timezone in seconds
-                setLocalTime(new Date((Date.now() - new Date().getTimezoneOffset() * 60000) - timezoneOffset * 1000));
+                setLocalTime(new Date((Date.now() + new Date().getTimezoneOffset() * 60000) + timezoneOffset * 1000));
             
                 setIconCoded(current.weather[0].icon);
-
+ 
 
                 setListDataChart(data.list.map((object, index) => {
                     return {
@@ -139,7 +137,6 @@ export function Weather(){
     
     const definitions = useDefinitions();
 
-    console.log(listDataChart)
 
     const color = definitions.theme.data ? '#ffffff' : '#101010';
 

@@ -15,15 +15,15 @@ function App() {
 
   useEffect(() => {
     if (window.location.pathname !== '/'){
-      localStorage.setItem('lastPage', window.location.pathname);
+      sessionStorage.setItem('lastPage', window.location.pathname);
     }
   }, [])
 
 
   useEffect(() => {
-    const city = localStorage.getItem('city');
+    const city = sessionStorage.getItem('city');
     if (city) {
-      const lastPage = localStorage.getItem('lastPage') || `/places/${city}`;
+      const lastPage = sessionStorage.getItem('lastPage') || `/places/${city}`;
       navigate(lastPage);
       return
     }
@@ -34,11 +34,15 @@ function App() {
         fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${postion.coords.latitude}&lon=${postion.coords.longitude}&appid=${process.env.REACT_APP_API_KEY}`)
         .then(response => response.json())
         .then(data => {
-          localStorage.setItem('city', data[0].name)
+          sessionStorage.setItem('city', data[0].name)
 
-          setCity(() => data[0].name);
-          const lastPage = localStorage.getItem('lastPage') || `/places/${data[0].name}`;
-          navigate(lastPage);
+          if (data[0].name) {
+            setCity(() => data[0].name);
+            const lastPage = sessionStorage.getItem('lastPage') || `/places/${data[0].name}`;
+            navigate(lastPage);
+          }
+        }).catch(error => {
+          console.error(error)
         })
 
         
@@ -51,8 +55,6 @@ function App() {
     }
   }, [])
   
-
-  console.log(city)
 
 
   return (

@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import './toggleSearch.css';
 import { Link } from 'react-router-dom';
 
-export function ToggleSearch({city}){
+export function ToggleSearch(){
 
     const [current, setCurrent] = useState(0);
+    const city = sessionStorage.getItem('city');
 
     const buttons = [
         {label: 'Your Location', class: 'local', link: `/places/${city}`},
-        {label: 'Search Location', class: 'search', link: `/search`}
+        {label: 'Search City', class: 'search', link: `/search`}
     ]
 
     return (

@@ -3,4 +3,76 @@
     justify-content: center;
     align-items: center;
     padding-top: 40px;
+    flex-direction: column;
+    gap: 130px;
+}
+
+.form-search{
+    display: flex;
+
+}
+
+
+.input-search{
+    outline: none;
+    padding: 4px 30px;
+    width: 300px;
+    background-color: var(--lighter-2);
+    border: none;
+    font-size: 15px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    color: var(--font-color);
+}
+
+.input-search::placeholder{
+    color: var(--font-color);
+
+}
+
+.button-search{
+    background-color: var(--lighter-2);
+    border: none;
+    cursor: pointer;
+    padding: 4px 14px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.city-card{
+    background-color: var(--lighter-2);
+    padding: 6px 25px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    cursor: pointer;
+}
+
+.city-card:hover{
+    
+}
+
+.city-card:active{
+
+}
+
+.span-city{
+    font-size: 20px;
+}
+
+.span-country{
+    font-size: 12px;
+}
+
+.image-card{
+    width: 20px;
+}
+
+.result-container{
+    width: 70vw;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
 }
