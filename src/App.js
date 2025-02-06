@@ -3,6 +3,7 @@ import './App.css';
 import {Header} from './components/header/header';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { Weather } from './components/weather/wheather';
+import { Navigate } from 'react-router-dom';
 
 import { ToggleSearch } from './components/toggleSearch/toggleSearch';
 import { Search } from './components/search/search';
@@ -23,7 +24,7 @@ function App() {
   useEffect(() => {
     const city = sessionStorage.getItem('city');
     if (city) {
-      const lastPage = sessionStorage.getItem('lastPage') || `/places/${city}`;
+      const lastPage = sessionStorage.getItem('lastPage') || `zephyr/places/${city}`;
       navigate(lastPage);
       return
     }
@@ -38,7 +39,7 @@ function App() {
 
           if (data[0].name) {
             setCity(() => data[0].name);
-            const lastPage = sessionStorage.getItem('lastPage') || `/places/${data[0].name}`;
+            const lastPage = sessionStorage.getItem('lastPage') || `zephyr/places/${data[0].name}`;
             navigate(lastPage);
           }
         }).catch(error => {
@@ -64,8 +65,9 @@ function App() {
       <ToggleSearch city={city}/>
 
       <Routes>
-        <Route path='/places/:city'  element={<Weather />}/>
-        <Route path='/search'    element={<Search />}/>
+        <Route path='/zephyr'  element={<Navigate to={'/'} />}/>
+        <Route path='/zephyr/places/:city'  element={<Weather />}/>
+        <Route path='/zephyr/search'    element={<Search />}/>
       </Routes>
 
     </main>

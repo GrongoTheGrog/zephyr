@@ -69,7 +69,7 @@ function CityCard(props) {
     const navigator = useNavigate()
 
     function clickCard(){
-        navigator(`/places/${props.city}`)
+        navigator(`/zephyr/places/${props.city}`)
     }
     
     const {theme} = useDefinitions();
