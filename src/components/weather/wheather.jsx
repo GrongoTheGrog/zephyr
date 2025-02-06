@@ -43,7 +43,7 @@ export function Weather(){
 
         const getData = async () => {
             try{
-                const responseCoords = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=10&appid=${process.env.REACT_APP_API_KEY}`);
+                const responseCoords = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=10&appid=${process.env.REACT_APP_API_KEY}`);
 
                 if (!responseCoords.ok) {
                     throw new Error('Failed to fetch city coordinates');

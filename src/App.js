@@ -31,7 +31,7 @@ function App() {
     if ('geolocation' in navigator){
       navigator.geolocation.getCurrentPosition((postion) => {
 
-        fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${postion.coords.latitude}&lon=${postion.coords.longitude}&appid=${process.env.REACT_APP_API_KEY}`)
+        fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${postion.coords.latitude}&lon=${postion.coords.longitude}&appid=${process.env.REACT_APP_API_KEY}`)
         .then(response => response.json())
         .then(data => {
           sessionStorage.setItem('city', data[0].name)
