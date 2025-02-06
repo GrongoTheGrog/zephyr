@@ -101,18 +101,25 @@
 }
 
 .extra-info{
-    width: 105px;;
+    width: 90px;;
     font-size: 20px;
 }
 
 .wind-container{
-    width: 200px;
+    width: 140px;
     display: flex;
     align-items: center;
 }
 
 .wind-icon{
     font-size: 30px;
+}
+
+.chart-container{
+    display: flex;
+    flex: 0.9;
+    flex-direction: column;
+    align-items: center;
 }
 
 .option{
@@ -149,6 +156,8 @@
     display: none;
     opacity: 0;
     transition: opacity 1s ease;
+    top: 0;
+    transform: translate(0, -100%);
 }
 
 .option-dropdown.active{
@@ -160,3 +169,5 @@
 .pick-option{
     font-size: 17px;
 }
+
+

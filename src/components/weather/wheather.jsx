@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useDefinitions } from "../../siteDefinitions";
 
 import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, LineElement, PointElement } from 'chart.js';
 import { Line } from "react-chartjs-2";
@@ -7,6 +8,7 @@ import { Line } from "react-chartjs-2";
 import './wheather.css';
 
 import {format} from 'date-fns';
+import { ca } from "date-fns/locale";
 
 ChartJS.register(
     CategoryScale,
@@ -24,7 +26,9 @@ export function Weather(){
     const [data, setData] = useState();
     const [localTime, setLocalTime] = useState(null);
     const [iconCoded, setIconCoded] = useState(null);
-    const [chart, setChart] = useState('Temperature')
+    const [chart, setChart] = useState('Temperature');
+    const [listDataChart, setListDataChart] = useState(null);
+    const [currentData, setCurrentData] = useState(null)
 
     const optionRef = useRef();
 
@@ -53,13 +57,40 @@ export function Weather(){
                 const responseData = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&cnt=3&units=metric&lon=${lon}&appid=${process.env.REACT_APP_API_KEY}`);
 
                 data = await responseData.json();
-                console.log(data)
                 setData(() => data)
 
-                const timezoneOffset = data.city.timezone; // Timezone in seconds
-                setLocalTime(new Date(Date.now() + timezoneOffset * 1000));
+                const responseCurrentData = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&cnt=3&units=metric&lon=${lon}&appid=${process.env.REACT_APP_API_KEY}`)
+
+                const current = await responseCurrentData.json();
+
+                console.log(current)
+
+                setCurrentData(current);
+
+                const timezoneOffset = current.timezone; // Timezone in seconds
+                setLocalTime(new Date((Date.now() - new Date().getTimezoneOffset() * 60000) - timezoneOffset * 1000));
             
-                setIconCoded(data.list[0].weather[0].icon);
+                setIconCoded(current.weather[0].icon);
+
+
+                setListDataChart(data.list.map((object, index) => {
+                    return {
+                        'Temperature': {
+                            data: [object.main.temp, toF(object.main.temp)], 
+                            unit: ['Cº', 'Fº'], 
+                            time: object.dt_txt.slice(11).slice(0, 5)},
+
+                        'Wind': {
+                            data: [object.wind.speed * 4.2, object.wind.speed * 2.23694], 
+                            unit: ['km/h', 'mph'], 
+                            time: object.dt_txt.slice(11).slice(0, 5)},
+                        
+                        'Humidity': {
+                            data: [object.main.humidity, object.main.humidity], 
+                            unit: ['%', '%']},  
+                            time: object.dt_txt.slice(11).slice(0, 5),
+                    }
+                }))
 
 
             }catch(err){
@@ -73,7 +104,7 @@ export function Weather(){
     const options = [
         {label: 'Temperature'},
         {label: 'Wind'},
-        {label: 'Rain'}
+        {label: 'Humidity'}
     ]
 
     const iconMap = {
@@ -105,10 +136,16 @@ export function Weather(){
         optionRef.current.classList.remove('active');
         setChart(event.target.dataset.label);
     }
+    
+    const definitions = useDefinitions();
+
+    console.log(listDataChart)
+
+    const color = definitions.theme.data ? '#ffffff' : '#101010';
 
     return (
         <section className="weather-container">
-            {!data ? <h1> LOADING... </h1> : 
+            {!data || !currentData ? <h1> LOADING... </h1> : 
             <section className="weather-info-container">
                 <div className="title-weather">
                     <span>{city}</span>
@@ -135,19 +172,19 @@ export function Weather(){
 
                         <div className="temperature-display">
                             <span className="main-temperature">
-                                {celcius ? `${data.list[0].main.temp.toFixed(1)}ºC` : `${toF(data.list[0].main.temp).toFixed(1)}ºF`}
+                                {celcius ? `${currentData.main.temp.toFixed(1)}ºC` : `${toF(currentData.main.temp).toFixed(1)}ºF`}
                             </span>
 
                             <span className="max-temperature">
-                                Feels like: {celcius ? `${data.list[0].main.feels_like.toFixed(1)}ºC` : `${toF(data.list[0].main.feels_like).toFixed(1)}ºF`}
+                                Feels like: {celcius ? `${currentData.main.feels_like.toFixed(1)}ºC` : `${toF(currentData.main.feels_like).toFixed(1)}ºF`}
                             </span>
 
                             <span className="max-temperature">
-                                Max: {celcius ? `${data.list[0].main.temp_max.toFixed(1)}ºC` : `${toF(data.list[0].main.temp_max).toFixed(1)}ºF`}
+                                Max: {celcius ? `${currentData.main.temp_max.toFixed(1)}ºC` : `${toF(currentData.main.temp_max).toFixed(1)}ºF`}
                             </span>
 
                             <span className="max-temperature">
-                                Min: {celcius ? `${data.list[0].main.temp_min.toFixed(1)}ºC` : `${toF(data.list[0].main.temp_min).toFixed(1)}ºF`}
+                                Min: {celcius ? `${currentData.main.temp_min.toFixed(1)}ºC` : `${toF(currentData.main.temp_min).toFixed(1)}ºF`}
                             </span>
                         </div>
                     </div>
@@ -155,7 +192,7 @@ export function Weather(){
                     <div className="weather-icon-container">
                         <i className={`wi ${iconMap[iconCoded]} weather-icon`}></i>
                         <span className="weather-status">
-                            {data.list[0].weather[0].main}
+                            {currentData.weather[0].main}
                         </span>
                     </div>
 
@@ -165,7 +202,7 @@ export function Weather(){
                                 Humidity:
                             </span>
                             <span className="extra-info">
-                                {data.list[0].main.humidity}%
+                                {currentData.main.humidity}%
                             </span>
                         </div>
 
@@ -175,9 +212,9 @@ export function Weather(){
                             </span>
                             <div className="wind-container">
                                 <span className="extra-info">
-                                    {celcius ? (data.list[0].wind.speed * 4.2).toFixed(1) : (data.list[0].wind.speed * 2.23694).toFixed(1)} {celcius ? 'km/h' : 'mph'}
+                                    {celcius ? (currentData.wind.speed * 4.2).toFixed(1) : (currentData.wind.speed * 2.23694).toFixed(1)} {celcius ? 'km/h' : 'mph'}
                                 </span>
-                                <i className={`wi wi-wind towards-${data.list[0].wind.deg}-deg wind-icon`}></i>
+                                <i className={`wi wi-wind towards-${currentData.wind.deg}-deg wind-icon`}></i>
                             </div>
                         </div>
                     </div>
@@ -203,20 +240,52 @@ export function Weather(){
 
 
                         <Line data={{
-                            label: ['1pm', '4pm', '7pm', '10pm'],
+                            labels: [listDataChart[0].time, listDataChart[1].time, listDataChart[2].time],
                             datasets: [
                                 {
                                     label: chart,
-                                    data: [10, 30, 90, 10],
-                                    backgroundColor: 'var(--font-color)',
-                                    borderColor: 'var(--font-color)'
+                                    data: listDataChart.map((object, index) => {
+                                        return object[chart].data[celcius ? 0 : 1]
+                                    }),
+                                    backgroundColor: color,
+                                    borderColor: color
                                 }
                             ]
                         }} options={{
-                            responsive: false,
+                            maintainAspectRatio: true,
+                            aspectRatio: 12/4,
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                },
+
+                                y: {
+                                    title: {
+                                        position: 'bottom',
+                                        display: true,
+                                        text: listDataChart[0][chart].unit[celcius ? 0 : 1],
+                                        padding: { bottom: 8 },
+                                        font: {
+                                            size: '18'
+                                        }
+                                    },
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            },
+
+                            datasets: {
+                                line: {
+                                }
+                            },
+
                             plugins: {
                                 legend: {
-                                    position: "bottom",
+                                    display: false
                                 },
                                 title: {
                                     display: false
