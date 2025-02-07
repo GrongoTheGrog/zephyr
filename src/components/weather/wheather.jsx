@@ -43,6 +43,7 @@ export function Weather(){
 
         const getData = async () => {
             try{
+                setData(() => null)
                 const responseCoords = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=10&appid=${process.env.REACT_APP_API_KEY}`);
 
                 if (!responseCoords.ok) {
@@ -97,7 +98,7 @@ export function Weather(){
         }
 
         getData();
-    }, []) 
+    }, [city]) 
 
     const options = [
         {label: 'Temperature'},

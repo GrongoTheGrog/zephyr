@@ -8,7 +8,7 @@ export function ToggleSearch(){
     const city = sessionStorage.getItem('city');
 
     const buttons = [
-        {label: 'Your Location', class: 'local', link: `/zephyr`},
+        {label: 'Your Location', class: 'local', link: `/zephyr/places/${city}`},
         {label: 'Search City', class: 'search', link: `/zephyr/search`}
     ]
 
