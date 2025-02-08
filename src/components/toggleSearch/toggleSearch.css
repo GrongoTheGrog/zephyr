@@ -11,7 +11,7 @@
     cursor: pointer;
     border: none;
     color: var(--font-color);
-    padding: 3px 30px;
+    padding: 3px 10px;
     box-sizing: content-box;
     text-decoration: none;
     display: flex;

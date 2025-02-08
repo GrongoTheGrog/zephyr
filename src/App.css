@@ -28,6 +28,7 @@ body{
 	font-family: sans-serif;
 	color: var(--font-color);
 	background-color: var(--base-color);
-	padding: 0;
+	padding: 20px;
+	padding-top: 50px;
 	margin: 0;
 }

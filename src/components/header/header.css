@@ -28,6 +28,10 @@ header{
     box-sizing: border-box;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     font-style: italic;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
 }
 
 .toggleTheme{
